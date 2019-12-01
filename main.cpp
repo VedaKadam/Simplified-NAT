@@ -9,6 +9,7 @@ using namespace std;
 map<string,string> NAT_items;
 map<string,string>::iterator match;
 
+//Function to check for a match
 int check_NAT(string flow)
 {
 
