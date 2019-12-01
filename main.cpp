@@ -18,6 +18,7 @@ int check_NAT(string flow)
     flow_IP = flow.substr(0,position);
     flow_port = flow.substr(position+1);
 
+    //Direct match
     match = NAT_items.find(flow);
     if ( match != NAT_items.end())
     {
@@ -25,6 +26,7 @@ int check_NAT(string flow)
         return 0;
     }
 
+    //Any IP to a specific port match
     string temp_for_IP = "*:" + flow_port;
     match = NAT_items.find(temp_for_IP);
     if( match != NAT_items.end())
@@ -34,6 +36,7 @@ int check_NAT(string flow)
 
     }
 
+    //Any port to a specific IP match
     string temp_for_port = flow_IP + ":*";
     match = NAT_items.find(temp_for_port);
     if( match != NAT_items.end())
@@ -43,6 +46,7 @@ int check_NAT(string flow)
 
     }
 
+    //If no kind of match is found
     cout<<"No NAT match for "<<flow<<endl;
     return 0;
 
@@ -61,6 +65,7 @@ int main()
     NAT_file.open("NAT.txt");
     FLOW_file.open("FLOW.txt");
 
+    //check if files can be opened
     if(!NAT_file)
     {
         cerr<<"Problem with opening the NAT file"<<endl;
@@ -72,18 +77,21 @@ int main()
         return 1;
     }
 
-    //Get all data from file into a vector
+    //Get all data from NAT file into a dictionary map
     while(getline(NAT_file, temp_line))
     {
         int x = temp_line.find(',');
         temp2_line = temp_line.substr(0, x);
         NAT_items[temp2_line] = temp_line.substr(x+1);
     }
+    
+    //Get all data from FLOW file into a vector
     while(getline(FLOW_file, temp_line))
     {
         FLOW_items.push_back(temp_line);
     }
 
+    //check for match
     for( auto f : FLOW_items )
     {
         ret_val = check_NAT(f);
